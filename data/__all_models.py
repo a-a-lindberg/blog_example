@@ -1,3 +1,3 @@
 # Здесь будут все наши модели
 
-from . import users
+from . import news, users

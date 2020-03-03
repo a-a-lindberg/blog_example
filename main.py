@@ -7,6 +7,7 @@ from data import db_session
 from data.news import News
 from data.users import User
 from forms.login import LoginForm
+from forms.news import NewsForm
 from forms.register import RegisterForm
 
 app = Flask(__name__)
@@ -79,6 +80,24 @@ def login():
 def logout():
     logout_user()
     return redirect("/")
+
+
+@app.route('/news',  methods=['GET', 'POST'])
+@login_required
+def add_news():
+    form = NewsForm()
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        news = News()
+        news.title = form.title.data
+        news.content = form.content.data
+        news.is_private = form.is_private.data
+        current_user.news.append(news)
+        session.merge(current_user)
+        session.commit()
+        return redirect('/')
+    return render_template('news.html', title='Добавление новости',
+                           form=form)
 
 
 @login_manager.user_loader

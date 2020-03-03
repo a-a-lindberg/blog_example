@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, session
 from werkzeug.utils import redirect
 
 from data import db_session
@@ -50,6 +50,16 @@ def reqister():
 @app.route('/login')
 def login():
     return "Извините, эта страница пока не готова. Приходите позже.", 503
+
+
+@app.route('/session_test/')
+def session_test():
+    if 'visits_count' in session:
+        session['visits_count'] = session.get('visits_count') + 1
+    else:
+        session['visits_count'] = 1
+
+    return f"Вы пришли на эту страницу {session['visits_count']} раз"
 
 
 if __name__ == '__main__':

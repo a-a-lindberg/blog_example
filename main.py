@@ -130,6 +130,20 @@ def edit_news(id):
     return render_template('news.html', title='Редактирование новости', form=form)
 
 
+@app.route('/news_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def news_delete(id):
+    session = db_session.create_session()
+    news = session.query(News).filter(News.id == id,
+                                      News.user == current_user).first()
+    if news:
+        session.delete(news)
+        session.commit()
+    else:
+        abort(404)
+    return redirect('/')
+
+
 @login_manager.user_loader
 def load_user(user_id):
     session = db_session.create_session()

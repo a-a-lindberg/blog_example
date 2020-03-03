@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, login_required, logout_user
 from werkzeug.utils import redirect
 
 from data import db_session
@@ -65,6 +65,13 @@ def login():
                                message="Неправильный логин или пароль",
                                form=form)
     return render_template('login.html', title='Авторизация', form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
 
 
 @login_manager.user_loader

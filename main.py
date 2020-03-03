@@ -59,6 +59,7 @@ def session_test():
     else:
         session['visits_count'] = 1
 
+    session.permanent = True
     return f"Вы пришли на эту страницу {session['visits_count']} раз"
 
 

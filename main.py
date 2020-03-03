@@ -1,5 +1,6 @@
 from flask import Flask, render_template
-from flask_login import LoginManager, login_user, login_required, logout_user
+from flask_login import LoginManager, login_user, login_required, logout_user, \
+    current_user
 from werkzeug.utils import redirect
 
 from data import db_session
@@ -22,7 +23,13 @@ def main():
 @app.route("/")
 def index():
     session = db_session.create_session()
-    news = session.query(News).filter(News.is_private != True)
+
+    if current_user.is_authenticated:
+        news = session.query(News).filter(
+            (News.user == current_user) | (News.is_private != True))
+    else:
+        news = session.query(News).filter(News.is_private != True)
+
     return render_template("index.html", news=news)
 
 

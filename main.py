@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from flask_login import LoginManager
 from werkzeug.utils import redirect
 
 from data import db_session
@@ -8,6 +9,8 @@ from forms.register import RegisterForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 
 def main():
@@ -50,6 +53,12 @@ def reqister():
 @app.route('/login')
 def login():
     return "Извините, эта страница пока не готова. Приходите позже.", 503
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    session = db_session.create_session()
+    return session.query(User).get(user_id)
 
 
 if __name__ == '__main__':

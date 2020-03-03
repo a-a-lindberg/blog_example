@@ -1,3 +1,5 @@
+import datetime
+
 from flask import Flask, render_template, session
 from werkzeug.utils import redirect
 
@@ -8,6 +10,7 @@ from forms.register import RegisterForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(days=365)
 
 
 def main():

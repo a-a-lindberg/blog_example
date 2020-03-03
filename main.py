@@ -1,6 +1,7 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_login import LoginManager, login_user, login_required, logout_user, \
     current_user
+from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
 
 from data import db_session
@@ -98,6 +99,35 @@ def add_news():
         return redirect('/')
     return render_template('news.html', title='Добавление новости',
                            form=form)
+
+
+@app.route('/news/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_news(id):
+    form = NewsForm()
+    if request.method == "GET":
+        session = db_session.create_session()
+        news = session.query(News).filter(News.id == id,
+                                          News.user == current_user).first()
+        if news:
+            form.title.data = news.title
+            form.content.data = news.content
+            form.is_private.data = news.is_private
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        news = session.query(News).filter(News.id == id,
+                                          News.user == current_user).first()
+        if news:
+            news.title = form.title.data
+            news.content = form.content.data
+            news.is_private = form.is_private.data
+            session.commit()
+            return redirect('/')
+        else:
+            abort(404)
+    return render_template('news.html', title='Редактирование новости', form=form)
 
 
 @login_manager.user_loader

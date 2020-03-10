@@ -62,3 +62,15 @@ def get_one_news(news_id):
             )
         }
     )
+
+
+@blueprint.route('/api/news/<int:news_id>', methods=['DELETE'])
+def delete_news(news_id):
+    # TODO: Добавить авторизацию пользователя
+    session = db_session.create_session()
+    news = session.query(News).get(news_id)
+    if not news:
+        return jsonify({'error': 'Not found'})
+    session.delete(news)
+    session.commit()
+    return jsonify({'success': 'OK'})

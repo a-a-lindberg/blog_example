@@ -4,6 +4,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, \
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
 
+import news_api
 from data import db_session
 from data.news import News
 from data.users import User
@@ -19,6 +20,7 @@ login_manager.init_app(app)
 
 def main():
     db_session.global_init("db/blogs.sqlite")
+    app.register_blueprint(news_api.blueprint)
     app.run()
 
 

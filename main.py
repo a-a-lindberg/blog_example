@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, make_response, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, \
     current_user
 from werkzeug.exceptions import abort
@@ -144,6 +144,11 @@ def news_delete(id):
     else:
         abort(404)
     return redirect('/')
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 @login_manager.user_loader

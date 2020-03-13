@@ -5,6 +5,7 @@ from flask_restful import Api
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
 
+from api import news_resources
 from data import db_session
 from data.news import News
 from data.users import User
@@ -19,6 +20,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 api = Api(app)
+api.add_resource(news_resources.NewsListResource, '/api/v2/news')
+api.add_resource(news_resources.NewsResource, '/api/v2/news/<int:news_id>')
 
 
 def main():
